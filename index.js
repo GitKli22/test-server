@@ -1,6 +1,6 @@
 // const express = require('express');
 // const app = express();
-// const port = 3000;
+ //const port = 3000;
 
 // app.get('/', (req, res) => res.send('Hello World!'));
 
@@ -140,169 +140,169 @@ app.get('/', (req, res) =>{
 //   res.send(var_arr)
 //   res.render('index.html')
 // });
-const { google } = require('googleapis')
-const oauth2Client = new google.auth.OAuth2(
-  '1054365322332-u9tplt2okldr1528npb5s8ear8q4mpal.apps.googleusercontent.com',
-   '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',
-   "https://apicalendar.klivar-test.ovh/handleGoogleRedirect" // server redirect url handler
- );
- const fetch = require("node-fetch");
+// const { google } = require('googleapis')
+// const oauth2Client = new google.auth.OAuth2(
+//   '1054365322332-u9tplt2okldr1528npb5s8ear8q4mpal.apps.googleusercontent.com',
+//    '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',
+//    "https://apicalendar.klivar-test.ovh/handleGoogleRedirect" // server redirect url handler
+//  );
+//  const fetch = require("node-fetch");
  
- app.post("/createAuthLink", cors(), (req, res) => {
-   const url = oauth2Client.generateAuthUrl({
-     access_type: "offline",
-     scope: [
-       "https://www.googleapis.com/auth/userinfo.email",
-       //calendar api scopes]
-       "https://www.googleapis.com/auth/calendar",
-     ],
-     prompt: "consent",
-   });
-   res.send({ url });
- });
+//  app.post("/createAuthLink", cors(), (req, res) => {
+//    const url = oauth2Client.generateAuthUrl({
+//      access_type: "offline",
+//      scope: [
+//        "https://www.googleapis.com/auth/userinfo.email",
+//        //calendar api scopes]
+//        "https://www.googleapis.com/auth/calendar",
+//      ],
+//      prompt: "consent",
+//    });
+//    res.send({ url });
+//  });
  
- app.get("/handleGoogleRedirect", async (req, res) => {
-   // get code from url
-   const code = req.query.code;
-   console.log("server 36 | code", code);
-   // get access token
-   oauth2Client.getToken(code, (err, tokens) => {
-     if (err) {
-       console.log("server 39 | error", err);
-       throw new Error("Issue with Login", err.message);
-     }
-     const accessToken = tokens.access_token;
-     const refreshToken = tokens.refresh_token;
+//  app.get("/handleGoogleRedirect", async (req, res) => {
+//    // get code from url
+//    const code = req.query.code;
+//    console.log("server 36 | code", code);
+//    // get access token
+//    oauth2Client.getToken(code, (err, tokens) => {
+//      if (err) {
+//        console.log("server 39 | error", err);
+//        throw new Error("Issue with Login", err.message);
+//      }
+//      const accessToken = tokens.access_token;
+//      const refreshToken = tokens.refresh_token;
  
-     res.redirect(
-       `http://localhost:3000/#/forms/mon-compte/?&accessToken=${accessToken}&refreshToken=${refreshToken}`
-     );
-   });
- });
+//      res.redirect(
+//        `http://localhost:3000/#/forms/mon-compte/?&accessToken=${accessToken}&refreshToken=${refreshToken}`
+//      );
+//    });
+//  });
 
-app.post('/events', (req, response1) =>{
-  // Require google from googleapis package.
-  const { google } = require('googleapis')
-  // Require oAuth2 from our google instance.
-  const { OAuth2 } = google.auth
-  // Create a new instance of oAuth and set our Client ID & Client Secret.
-  const oAuth2Client = new OAuth2( '1054365322332-u9tplt2okldr1528npb5s8ear8q4mpal.apps.googleusercontent.com', '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')
-  // Call the setCredentials method on our oAuth2Client instance and set our refresh token.
-  oAuth2Client.setCredentials({
-    refresh_token:`${req.body.refresh_token}`,
-  })
-  // Create a new calender instance.
-  const calendar = google.calendar({ version: 'v3', auth: oAuth2Client })
-  // Create a new event start date instance for temp uses in our calendar.
-  const eventStartTime = new Date()
-  eventStartTime.setDate(eventStartTime.getDay() + 5)
-  // Create a new event end date instance for temp uses in our calendar.
-  const eventEndTime = new Date()
-  eventEndTime.setDate(eventEndTime.getDay() + 5)
-  eventEndTime.setMinutes(eventEndTime.getMinutes() + 60)
-  var attendees_list=[];
-  var te= `${req.body.emails}`.split(',')
-  if (te.length>1){
-    te.map((mail, i) => {
-      attendees_list.push({'email':mail});
-    });
-  }
-  // Create a dummy event for temp uses in our calendar
-  const event = {
-    summary: `${req.body.summary}`,
-    description: `${req.body.description}`,
-    colorId: 6,
-    start: {
-      dateTime:`${req.body.dateTimeStart}` //dateTime: '2022-05-27T14:02:30.810Z',
-    },
-    end: {
-      dateTime:`${req.body.dateTimeEnd}`// dateTime: '2022-05-27T16:02:30.810Z',
-    },
-    attendees:attendees_list, // attendees: [{email: 'devklivar@gmail.com'},{email: 'audreysam40@gmail.com'}, ],
-    reminders: {
-      useDefault: false,
-      overrides: [
-        {method: 'email', minutes: 24 * 60},
-        {method: 'popup', minutes: 10},
-      ],
-    },
-  }
-  // Check if we a busy and have an event on our calendar for the same time.
-  calendar.freebusy.query(
-    {
-      resource: {
-        timeMin: `${req.body.dateTimeStart}`,
-        timeMax: `${req.body.dateTimeEnd}`,
-        items: [{ id: 'primary' }],
-      },
-    },
-    (err, res) => {
-      // Check for errors in our query and log them if they exist.
-      if (err) {
-        response1.send({ 
-          code:400,
-          status:"Check for errors in our query and log them if they exist",
-          msg:"Free Busy Query Error: "+ err 
-                })
-        return console.error('Free Busy Query Error: ', err)
-      }
-      // Create an array of all events on our calendar during that time.
-      const eventArr = res.data.calendars.primary.busy
-      // Check if event array is empty which means we are not busy
-      if (eventArr.length === 0) {
-        // If we are not busy create a new calendar event.
-        return calendar.events.insert(
-          { calendarId: 'primary', resource: event },
-          (err, res1)  => {
-            // Check for errors and log them if they exist.
-            if (err){
-              response1.send({ 
-                code:500,
-                status:"Internal Server Error",
-                msg:"Error Creating Calender Event:"+ err 
-                      })
-              return console.log("Error Creating Calender Event:"+ err)
-            } 
-            // Else log that the event was created.
-            response1.send({ 
-              code:201,
-              status:"successfully",
-              msg:"Cette tâche à été envoyer avec succes" 
-                    })
-           return console.log(`Cette tâche à été envoyer avec succes`);
-             //return res.json(r)
-          })
-        }
-      // If event array is not empty log that we are busy.
-      response1.send({ 
-        code:409,
-        status:"Conflit",
-        msg:"Désolé je suis occupé pour cette fois" 
-              })
-      return  console.log(`Sorry I'm busy for that time...`)
-     })
+// app.post('/events', (req, response1) =>{
+//   // Require google from googleapis package.
+//   const { google } = require('googleapis')
+//   // Require oAuth2 from our google instance.
+//   const { OAuth2 } = google.auth
+//   // Create a new instance of oAuth and set our Client ID & Client Secret.
+//   const oAuth2Client = new OAuth2( '1054365322332-u9tplt2okldr1528npb5s8ear8q4mpal.apps.googleusercontent.com', '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')
+//   // Call the setCredentials method on our oAuth2Client instance and set our refresh token.
+//   oAuth2Client.setCredentials({
+//     refresh_token:`${req.body.refresh_token}`,
+//   })
+//   // Create a new calender instance.
+//   const calendar = google.calendar({ version: 'v3', auth: oAuth2Client })
+//   // Create a new event start date instance for temp uses in our calendar.
+//   const eventStartTime = new Date()
+//   eventStartTime.setDate(eventStartTime.getDay() + 5)
+//   // Create a new event end date instance for temp uses in our calendar.
+//   const eventEndTime = new Date()
+//   eventEndTime.setDate(eventEndTime.getDay() + 5)
+//   eventEndTime.setMinutes(eventEndTime.getMinutes() + 60)
+//   var attendees_list=[];
+//   var te= `${req.body.emails}`.split(',')
+//   if (te.length>1){
+//     te.map((mail, i) => {
+//       attendees_list.push({'email':mail});
+//     });
+//   }
+//   // Create a dummy event for temp uses in our calendar
+//   const event = {
+//     summary: `${req.body.summary}`,
+//     description: `${req.body.description}`,
+//     colorId: 6,
+//     start: {
+//       dateTime:`${req.body.dateTimeStart}` //dateTime: '2022-05-27T14:02:30.810Z',
+//     },
+//     end: {
+//       dateTime:`${req.body.dateTimeEnd}`// dateTime: '2022-05-27T16:02:30.810Z',
+//     },
+//     attendees:attendees_list, // attendees: [{email: 'devklivar@gmail.com'},{email: 'audreysam40@gmail.com'}, ],
+//     reminders: {
+//       useDefault: false,
+//       overrides: [
+//         {method: 'email', minutes: 24 * 60},
+//         {method: 'popup', minutes: 10},
+//       ],
+//     },
+//   }
+//   // Check if we a busy and have an event on our calendar for the same time.
+//   calendar.freebusy.query(
+//     {
+//       resource: {
+//         timeMin: `${req.body.dateTimeStart}`,
+//         timeMax: `${req.body.dateTimeEnd}`,
+//         items: [{ id: 'primary' }],
+//       },
+//     },
+//     (err, res) => {
+//       // Check for errors in our query and log them if they exist.
+//       if (err) {
+//         response1.send({ 
+//           code:400,
+//           status:"Check for errors in our query and log them if they exist",
+//           msg:"Free Busy Query Error: "+ err 
+//                 })
+//         return console.error('Free Busy Query Error: ', err)
+//       }
+//       // Create an array of all events on our calendar during that time.
+//       const eventArr = res.data.calendars.primary.busy
+//       // Check if event array is empty which means we are not busy
+//       if (eventArr.length === 0) {
+//         // If we are not busy create a new calendar event.
+//         return calendar.events.insert(
+//           { calendarId: 'primary', resource: event },
+//           (err, res1)  => {
+//             // Check for errors and log them if they exist.
+//             if (err){
+//               response1.send({ 
+//                 code:500,
+//                 status:"Internal Server Error",
+//                 msg:"Error Creating Calender Event:"+ err 
+//                       })
+//               return console.log("Error Creating Calender Event:"+ err)
+//             } 
+//             // Else log that the event was created.
+//             response1.send({ 
+//               code:201,
+//               status:"successfully",
+//               msg:"Cette tâche à été envoyer avec succes" 
+//                     })
+//            return console.log(`Cette tâche à été envoyer avec succes`);
+//              //return res.json(r)
+//           })
+//         }
+//       // If event array is not empty log that we are busy.
+//       response1.send({ 
+//         code:409,
+//         status:"Conflit",
+//         msg:"Désolé je suis occupé pour cette fois" 
+//               })
+//       return  console.log(`Sorry I'm busy for that time...`)
+//      })
  
-  // console.log(req.body)
-  // const sgMail = require('@sendgrid/mail')
-  // sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-  // const msg = {
-  //   to: req.body.to, // Change to your recipient
-  //   from: 'your email goes here', // Change to your verified sender
-  //   subject: req.body.summary,
-  //   text: req.body.description,
-  //   html: req.body.description,
-  // }
-  // sgMail
-  //   .send(msg)
-  //   .then(() => {
-  //     console.log('Email sent')
-  //   })
-  //   .catch((error) => {
-  //     console.error(error)
-  //   })
+//   // console.log(req.body)
+//   // const sgMail = require('@sendgrid/mail')
+//   // sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+//   // const msg = {
+//   //   to: req.body.to, // Change to your recipient
+//   //   from: 'your email goes here', // Change to your verified sender
+//   //   subject: req.body.summary,
+//   //   text: req.body.description,
+//   //   html: req.body.description,
+//   // }
+//   // sgMail
+//   //   .send(msg)
+//   //   .then(() => {
+//   //     console.log('Email sent')
+//   //   })
+//   //   .catch((error) => {
+//   //     console.error(error)
+//   //   })
 
-  //res.send('events.html')
-})
+//   //res.send('events.html')
+// })
 
 https
   .createServer(option,app)
