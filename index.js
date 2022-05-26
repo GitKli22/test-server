@@ -201,29 +201,23 @@ app.post('/events', (req, response1) =>{
   eventEndTime.setMinutes(eventEndTime.getMinutes() + 60)
   var attendees_list=[];
   var te= `${req.body.emails}`.split(',')
-//   if (te.length>1){
-//     te.map((mail, i) => {
-//       attendees_list.push({'email':mail});
-//     });
-//   }
+  if (te.length>1){
+    te.map((mail, i) => {
+      attendees_list.push({'email':mail});
+    });
+  }
   // Create a dummy event for temp uses in our calendar
   const event = {
-    //summary: `${req.body.summary}`,
-    summary:"Rédaction d'incident sur les ziyouma ",
+    summary: `${req.body.summary}`,
     description: `${req.body.description}`,
-    description:"Utilisée ce lien pour les question difficile http://127.0.0.1:8000/#/pages/declaration/activite?token=1640ad2fc9f62f6b27ab65a61a7bf183f115c930&email=ghislainklivar@gmail.com",
     colorId: 6,
     start: {
-      //dateTime:`${req.body.dateTimeStart}` //dateTime: '2022-05-27T14:02:30.810Z',
-      dateTime:"2022-05-27T01:05:00.000Z"
+      dateTime:`${req.body.dateTimeStart}` //dateTime: '2022-05-27T14:02:30.810Z',
     },
     end: {
-      //dateTime:`${req.body.dateTimeEnd}`// dateTime: '2022-05-27T16:02:30.810Z',
-      dateTimeEnd: "2022-05-27T02:05:00.000Z"
+      dateTime:`${req.body.dateTimeEnd}`// dateTime: '2022-05-27T16:02:30.810Z',
     },
-    attendees:[
-        "samyfabiol@gmail.com"
-    ], // attendees: [{email: 'devklivar@gmail.com'},{email: 'audreysam40@gmail.com'}, ],
+    attendees:attendees_list, // attendees: [{email: 'devklivar@gmail.com'},{email: 'audreysam40@gmail.com'}, ],
     reminders: {
       useDefault: false,
       overrides: [
@@ -236,10 +230,8 @@ app.post('/events', (req, response1) =>{
   calendar.freebusy.query(
     {
       resource: {
-        //timeMin: `${req.body.dateTimeStart}`,
-        timeMin:"2022-05-27T01:05:00.000Z",
-        //timeMax: `${req.body.dateTimeEnd}`,
-        timeMax:"2022-05-27T02:05:00.000Z",
+        timeMin: `${req.body.dateTimeStart}`,
+        timeMax: `${req.body.dateTimeEnd}`,
         items: [{ id: 'primary' }],
       },
     },
