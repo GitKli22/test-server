@@ -48,7 +48,8 @@ const bodyParser = require('body-parser');
 //}));
 
 app.get('/', (req, res) =>{
-  res.render('index.html');
+  //res.render('index.html');
+  res.send('Hello World!')
 })
 
 
@@ -139,26 +140,26 @@ app.get('/', (req, res) =>{
 //   res.send(var_arr)
 //   res.render('index.html')
 // });
-// const { google } = require('googleapis')
-// const oauth2Client = new google.auth.OAuth2(
-//   '1054365322332-u9tplt2okldr1528npb5s8ear8q4mpal.apps.googleusercontent.com',
-//    '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',
-//    "https://apicalendar.klivar-test.ovh/handleGoogleRedirect" // server redirect url handler
-//  );
-//  const fetch = require("node-fetch");
+const { google } = require('googleapis')
+const oauth2Client = new google.auth.OAuth2(
+  '1054365322332-u9tplt2okldr1528npb5s8ear8q4mpal.apps.googleusercontent.com',
+   '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',
+   "https://apicalendar.klivar-test.ovh/handleGoogleRedirect" // server redirect url handler
+ );
+ const fetch = require("node-fetch");
  
-//  app.post("/createAuthLink", cors(), (req, res) => {
-//    const url = oauth2Client.generateAuthUrl({
-//      access_type: "offline",
-//      scope: [
-//        "https://www.googleapis.com/auth/userinfo.email",
-//        //calendar api scopes]
-//        "https://www.googleapis.com/auth/calendar",
-//      ],
-//      prompt: "consent",
-//    });
-//    res.send({ url });
-//  });
+ app.post("/createAuthLink", cors(), (req, res) => {
+   const url = oauth2Client.generateAuthUrl({
+     access_type: "offline",
+     scope: [
+       "https://www.googleapis.com/auth/userinfo.email",
+       //calendar api scopes]
+       "https://www.googleapis.com/auth/calendar",
+     ],
+     prompt: "consent",
+   });
+   res.send({ url });
+ });
  
 //  app.get("/handleGoogleRedirect", async (req, res) => {
 //    // get code from url
