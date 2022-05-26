@@ -144,7 +144,7 @@ const { google } = require('googleapis')
 const oauth2Client = new google.auth.OAuth2(
   '1054365322332-u9tplt2okldr1528npb5s8ear8q4mpal.apps.googleusercontent.com',
    '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',
-   "https://apicalendar.klivar-test.ovh/handleGoogleRedirect" // server redirect url handler
+   "https://testserverlivar.herokuapp.com/handleGoogleRedirect" // server redirect url handler
  );
  const fetch = require("node-fetch");
  
@@ -173,7 +173,6 @@ const oauth2Client = new google.auth.OAuth2(
      }
      const accessToken = tokens.access_token;
      const refreshToken = tokens.refresh_token;
- 
      res.redirect(
        `http://localhost:3000/#/forms/mon-compte/?&accessToken=${accessToken}&refreshToken=${refreshToken}`
      );
@@ -244,7 +243,7 @@ app.post('/events', (req, response1) =>{
           status:"Check for errors in our query and log them if they exist",
           msg:"Free Busy Query Error: "+ err 
                 })
-        return console.error('Free Busy Query Error: ', err)
+       // return console.error('Free Busy Query Error: ', err)
       }
       // Create an array of all events on our calendar during that time.
       const eventArr = res.data.calendars.primary.busy
@@ -261,7 +260,7 @@ app.post('/events', (req, response1) =>{
                 status:"Internal Server Error",
                 msg:"Error Creating Calender Event:"+ err 
                       })
-              return console.log("Error Creating Calender Event:"+ err)
+             // return console.log("Error Creating Calender Event:"+ err)
             } 
             // Else log that the event was created.
             response1.send({ 
@@ -269,7 +268,7 @@ app.post('/events', (req, response1) =>{
               status:"successfully",
               msg:"Cette tâche à été envoyer avec succes" 
                     })
-           return console.log(`Cette tâche à été envoyer avec succes`);
+          // return console.log(`Cette tâche à été envoyer avec succes`);
              //return res.json(r)
           })
         }
