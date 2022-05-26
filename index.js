@@ -37,19 +37,19 @@ const bodyParser = require('body-parser');
 //   cert:fs.readFileSync("./cert.pem"),
 // }
 
-//app.use(express.static(path.join(__dirname, 'public')))
-//app.set('views', __dirname + '/public/views');
-//app.engine('html', require('ejs').renderFile);
-//app.set('view engine', 'html');
-//app.use(bodyParser.urlencoded({extended: true}));
-//app.use(bodyParser.json());
-//app.use(cors({
- // origin: '*'
-//}));
+app.use(express.static(path.join(__dirname, 'public')))
+app.set('views', __dirname + '/public/views');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(cors({
+ origin: '*'
+}));
 
 app.get('/', (req, res) =>{
-  //res.render('index.html');
-  res.send('Hello World!')
+  res.render('index.html');
+//  res.send('Hello World!')
 })
 
 

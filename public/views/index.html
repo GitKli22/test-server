@@ -1,0 +1,28 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klivar Google & outloock Calander</title>
+  <link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+  <div class="form">
+    <label for="token">Google Calendar</label>
+    <hr>
+<p></p>
+<p></p>
+<p></p>
+    <h1>test API</h1>
+
+    <form action="http://localhost:3000/events" method="POST">
+      <label for="attendee email">Attendee email</label>
+      <input type="email" name="to" placeholder="send email to...">
+      <label for="event title">Event Title</label>
+      <input type="text" name="summary" placeholder="the title of event...">
+      <label for="body">Event body</label>
+      <input type="text" name="description" placeholder="the message body...">
+      <input type="submit" value="Send Event Invite">
+    </form>
+  </div>
+</body>
+</html>
